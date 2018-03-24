@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharaAnimator : MonoBehaviour {
+public class HeadAnimator : MonoBehaviour {
     protected GridMove m_move;
 
 	// Use this for initialization

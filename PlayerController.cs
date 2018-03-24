@@ -17,27 +17,29 @@ public class PlayerController : MonoBehaviour {
 		Vector3.left
 	};
 
+
+
     // Use this for initialization
     void Start () {
 		m_grid_move = GetComponent<GridMove> ();
     }
 
-	void OnStageStart(){
-		ChangeState ("State_Normal", State_NormalInit);
-
-		m_lastInput = Vector3.zero;
-		m_lastInputTime = 0.0f;
-	}
-
 	void Update(){
 		m_updateFunc();
     }
+    //--------------------阶段------------------------
 
-    void FixedUpdate () {
- 
+    void OnStageStart()
+    {
+        ChangeState("State_Normal", State_NormalInit);
+
+        m_lastInput = Vector3.zero;
+        m_lastInputTime = 0.0f;
     }
 
-	Vector3 TurnMoveDirection(float inputDirction){
+    //--------------------功能------------------------
+
+    Vector3 TurnMoveDirection(float inputDirction){
 		if (inputDirction != 0) {
 			directionCount = (directionCount + 4 + (int)inputDirction) % 4;
 		}
@@ -70,16 +72,23 @@ public class PlayerController : MonoBehaviour {
 		return direction;
 	}
 
-	public void OnGrid(Vector3 newPos){
+    public delegate void SaveTheTurnPointHandler(Vector3 position, Vector3 direction);
+    public static SaveTheTurnPointHandler SaveTheTurnPoint;
+
+    public void OnGrid(Vector3[] positionPage){
+        Vector3 pos = positionPage[0];
+        Vector3 near_grid = positionPage[1];
 		Vector3 direction = new Vector3();
 		direction = GetMoveDirection ();
 		if (direction == Vector3.zero) {
 			return;
 		}
-		m_grid_move.SetDirection (direction);
-	}
 
-	//-------------------------------------------------------
+        m_grid_move.SetDirection (direction);
+        SaveTheTurnPoint(near_grid, direction);
+    }
+
+	//-----------------------状态功能--------------------------------
 	delegate void STATE_FUNC();
 	private string m_currentStateName;
 	STATE_FUNC m_stateEndFunc;
@@ -94,7 +103,7 @@ public class PlayerController : MonoBehaviour {
 		m_updateFunc = Update_Normal;
 	}
 
-	private void ChangeState(string newState, STATE_FUNC init){
+    private void ChangeState(string newState, STATE_FUNC init){
 		if (m_currentStateName == newState) {
 			return;
 		}
@@ -112,7 +121,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		StartCoroutine (m_currentStateName);
 	}
-	//--------------------------------------------
+	//------------------状态初始化--------------------------
 	private void State_NormalInit(){
 		m_updateFunc = Update_Normal;
 	}

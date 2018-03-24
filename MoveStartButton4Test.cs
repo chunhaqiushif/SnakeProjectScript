@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoveStartButton4Test : MonoBehaviour {
 	GridMove m_grid_move;
-	SubMove m_sub_move;
+	SubGridMove m_sub_move;
 	// Use this for initialization
 	void Start () {
 		//m_grid_move = GameObject.Find ("head").GetComponent<GridMove> ();
