@@ -131,6 +131,12 @@ public class GridMove : MonoBehaviour {
 		return m_direction;
 	}
 
+    public Vector3 GetWorldDirection() {
+        Vector3 direction = m_direction;
+        
+        return direction;
+    }
+
 	public bool IsRuning(){
 		if ((m_move_vector.magnitude) > 0.1f)
 			return true;
