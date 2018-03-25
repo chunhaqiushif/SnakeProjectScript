@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour {
 	private float m_lastInputTime = 0;
 
 	private int directionCount = 0;
-	Vector3[] directions = new Vector3[4] {
+    private Vector3[] directions = new Vector3[4] {
 		Vector3.forward,
 		Vector3.right,
 		Vector3.back,
@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour {
     public void OnGrid(Vector3[] positionPage){
         Vector3 pos = positionPage[0];
         Vector3 near_grid = positionPage[1];
+
 		Vector3 direction = new Vector3();
 		direction = GetMoveDirection ();
 		if (direction == Vector3.zero) {

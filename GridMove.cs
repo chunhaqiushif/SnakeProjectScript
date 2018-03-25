@@ -9,34 +9,47 @@ public class GridMove : MonoBehaviour {
 	public bool isTurning;
 	float m_inputSpeed;
 
-	Vector3 m_move_vector;
-	Vector3 m_direction = new Vector3 ();
+    private Vector3 m_move_vector;
+    private Vector3 m_direction = new Vector3 ();
 
-	private const float HITCHECK_HEIGHT = 0.5f;
+    private Vector3 m_turnPointDirection = new Vector3();
+    private Vector3 m_turnPointPosition = new Vector3();
+
+    private const float HITCHECK_HEIGHT = 0.5f;
 	private const int HITCHECK_LAYER_MASK = 1 << 0;
 
-	//public delegate void PointAddEventHandler(Vector3 point);
-	//public static PointAddEventHandler PointAddEvent;
+    private List<Vector3> PointList = new List<Vector3>();
 
-	float m_input2turn;
+    float m_input2turn;
 
     private Vector3 m_next_pos = Vector3.zero;
     private Vector3 m_current_grid = Vector3.zero;
 
     float m_inputV = 0;
 
-	// Use this for initialization
-	void Start () {
+    int test = 0;
+
+    //判断是否为头部
+    public bool isHeadFlag = false;
+
+    //判断是否为节点头部
+    public bool isNodeHeadFlag = false;
+
+    // Use this for initialization
+    void Start () {
+        PlayerController.SaveTheTurnPoint += SetTheTurnPoint;
+
 		m_radius = 0.5f;
 		m_angle = 90.0f;
-		m_speed = 2f;
+		m_speed = 5f;
 
 		m_move_vector = Vector3.zero;
 		m_direction = Vector3.forward;
+        m_turnPointDirection = Vector3.zero;
+        m_turnPointPosition = Vector3.zero;
 
 		m_inputSpeed = m_speed;
 		isTurning = false;
-		
 
 	}
 
@@ -64,11 +77,20 @@ public class GridMove : MonoBehaviour {
 				Move (Time.deltaTime / (float)n);
 			}
 		}
+
+        if (PointList.Count != 0)
+        {
+            m_turnPointPosition = PointList[0];
+            m_turnPointDirection = PointList[1];
+        }
 	}
 
     //-------------------功能------------------------------------
-	public void Move(float t){
-
+    public void Move(float t){
+        if (isNodeHeadFlag)
+        {
+            return;
+        }
 		//下一个移动位置
 		Vector3 pos = transform.position;
 		pos += m_direction * m_inputSpeed * t;
@@ -85,6 +107,7 @@ public class GridMove : MonoBehaviour {
 		}
 
 		Vector3 near_grid = new Vector3 (Mathf.Round (pos.x), pos.y, Mathf.Round (pos.z));
+
         m_current_grid = near_grid;
 
         //当前位置正前方坐标，判断前方是否有障碍物
@@ -93,10 +116,18 @@ public class GridMove : MonoBehaviour {
 		if (across || (pos-near_grid).magnitude < 0.00005f) {
 			Vector3 direction_save = m_direction;
 
-            Vector3[] positionPage = new Vector3[2] {pos, near_grid};
+            if (isHeadFlag)
+            {
+                Vector3[] positionPage = new Vector3[2] { pos, near_grid };
 
-			//发送消息并调用OnGrid()方法
-			SendMessage ("OnGrid", positionPage);
+                //发送消息并调用OnGrid()方法
+                SendMessage("OnGrid", positionPage);
+            }
+            else if (near_grid == m_turnPointPosition)
+            {
+                SetDirection(m_turnPointDirection);
+                PointList.RemoveRange(0, 2);
+            }
 
 			if (Vector3.Dot(direction_save, m_direction)<0.00005f) {
 				pos = near_grid + m_direction * 0.001f;
@@ -106,9 +137,7 @@ public class GridMove : MonoBehaviour {
         m_move_vector = (pos - transform.position) / t;
         transform.position = pos;
 
-
     }
-
     //---------------------接口------------------------------
     public float GetSpeed() {
         return m_inputSpeed;
@@ -124,6 +153,12 @@ public class GridMove : MonoBehaviour {
 
     public Vector3 GetNearGrid() {      
         return m_current_grid;
+    }
+
+    public void SetTheTurnPoint(Vector3 position, Vector3 direction)
+    {
+        Vector3[] temp = { position, direction };
+        PointList.AddRange(temp);
     }
 
 	public bool IsRuning(){

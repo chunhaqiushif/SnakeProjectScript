@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class HeadAnimator : MonoBehaviour {
     protected GridMove m_move;
+    protected NodeHeadMove m_nodeHeadMove;
 
 	// Use this for initialization
 	void Start () {
         m_move = GetComponent<GridMove>();
+        if (m_move == null)
+        {
+            m_nodeHeadMove = GetComponent<NodeHeadMove>();
+            m_move = m_nodeHeadMove.m_parentNode_GridMove.GetComponent<GridMove>();
+        }
     }
 
 
