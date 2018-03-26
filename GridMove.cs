@@ -4,54 +4,59 @@ using UnityEngine;
 
 public class GridMove : MonoBehaviour {
 	public float m_speed;
-	public float m_angle;
-	public float m_radius;
-	public bool isTurning;
-	float m_inputSpeed;
+	float m_inputSpeed = 0;
 
-    private Vector3 m_move_vector;
-    private Vector3 m_direction = new Vector3 ();
+	Vector3 m_move_vector;
+	Vector3 m_direction = new Vector3 ();
 
-    private Vector3 m_turnPointDirection = new Vector3();
-    private Vector3 m_turnPointPosition = new Vector3();
-
-    private const float HITCHECK_HEIGHT = 0.5f;
+	private const float HITCHECK_HEIGHT = 0.5f;
 	private const int HITCHECK_LAYER_MASK = 1 << 0;
 
-    private List<Vector3> PointList = new List<Vector3>();
+	//public delegate void PointAddEventHandler(Vector3 point);
+	//public static PointAddEventHandler PointAddEvent;
 
-    float m_input2turn;
+	float m_input2turn;
 
     private Vector3 m_next_pos = Vector3.zero;
     private Vector3 m_current_grid = Vector3.zero;
 
     float m_inputV = 0;
 
-    int test = 0;
-
-    //判断是否为头部
+<<<<<<< HEAD
+<<<<<<< HEAD
     public bool isHeadFlag = false;
+    //public bool isFirstNode = false;
 
-    //判断是否为节点头部
-    public bool isNodeHeadFlag = false;
 
     // Use this for initialization
     void Start () {
-        PlayerController.SaveTheTurnPoint += SetTheTurnPoint;
+        PlayerController.ChangeDirectionPoint += SetTheTurnPoint;
 
+=======
+=======
+>>>>>>> parent of 3bfbc9d... Update
+	// Use this for initialization
+	void Start () {
 		m_radius = 0.5f;
 		m_angle = 90.0f;
-		m_speed = 5f;
+<<<<<<< HEAD
+>>>>>>> parent of 3bfbc9d... Update
+=======
+>>>>>>> parent of 3bfbc9d... Update
+		m_speed = 2f;
 
 		m_move_vector = Vector3.zero;
 		m_direction = Vector3.forward;
-        m_turnPointDirection = Vector3.zero;
-        m_turnPointPosition = Vector3.zero;
 
+<<<<<<< HEAD
+    }
+=======
 		m_inputSpeed = m_speed;
 		isTurning = false;
+		
 
 	}
+>>>>>>> parent of 3bfbc9d... Update
 
     //---------------------状态-----------------------
 	public void OnGameStart(){
@@ -77,26 +82,28 @@ public class GridMove : MonoBehaviour {
 				Move (Time.deltaTime / (float)n);
 			}
 		}
-
-        if (PointList.Count != 0)
-        {
-            m_turnPointPosition = PointList[0];
-            m_turnPointDirection = PointList[1];
-        }
 	}
 
     //-------------------功能------------------------------------
+<<<<<<< HEAD
+<<<<<<< HEAD
+
     public void Move(float t){
-        if (isNodeHeadFlag)
-        {
-            return;
-        }
+
+        //下一个移动位置
+        Vector3 pos = transform.position;
+=======
+=======
+>>>>>>> parent of 3bfbc9d... Update
+	public void Move(float t){
+
 		//下一个移动位置
 		Vector3 pos = transform.position;
+>>>>>>> parent of 3bfbc9d... Update
 		pos += m_direction * m_inputSpeed * t;
 
-		//检查是否通过网格
-		bool across = false;                                                                                                                                                                                                                                                    
+        //检查是否通过网格
+        bool across = false;                                                                                                                                                                                                                                                    
 
 		//比较整数化的坐标，false时判断为跨越了网格
 		if ((int)pos.x != (int)transform.position.x) {
@@ -107,27 +114,42 @@ public class GridMove : MonoBehaviour {
 		}
 
 		Vector3 near_grid = new Vector3 (Mathf.Round (pos.x), pos.y, Mathf.Round (pos.z));
-
         m_current_grid = near_grid;
 
         //当前位置正前方坐标，判断前方是否有障碍物
 		Vector3 forward_pos = pos + m_direction * 0.5f;
 
-		if (across || (pos-near_grid).magnitude < 0.00005f) {
+        if (isHeadFlag)
+        {
+            Vector3[] positionPage = new Vector3[2] { pos, near_grid };
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+            //发送消息并调用OnGrid()方法
+            SendMessage("OnGrid", positionPage);
+        }
+        else if (near_grid == m_turnPointPosition)
+            if (across || (pos-near_grid).magnitude < 0.00005f)
+        {
 			Vector3 direction_save = m_direction;
 
-            if (isHeadFlag)
-            {
-                Vector3[] positionPage = new Vector3[2] { pos, near_grid };
-
-                //发送消息并调用OnGrid()方法
-                SendMessage("OnGrid", positionPage);
-            }
-            else if (near_grid == m_turnPointPosition)
+            if (near_grid == m_turnPointPosition)
             {
                 SetDirection(m_turnPointDirection);
                 PointList.RemoveRange(0, 2);
             }
+=======
+            Vector3[] positionPage = new Vector3[2] {pos, near_grid};
+
+			//发送消息并调用OnGrid()方法
+			SendMessage ("OnGrid", positionPage);
+>>>>>>> parent of 3bfbc9d... Update
+=======
+            Vector3[] positionPage = new Vector3[2] {pos, near_grid};
+
+			//发送消息并调用OnGrid()方法
+			SendMessage ("OnGrid", positionPage);
+>>>>>>> parent of 3bfbc9d... Update
 
 			if (Vector3.Dot(direction_save, m_direction)<0.00005f) {
 				pos = near_grid + m_direction * 0.001f;
@@ -136,8 +158,29 @@ public class GridMove : MonoBehaviour {
 		}
         m_move_vector = (pos - transform.position) / t;
         transform.position = pos;
+<<<<<<< HEAD
+        
+    }
+
+    //public void OnGrid(Vector3 pos, Vector3 near_grid)
+    //{
+    //    Vector3 direction = new Vector3();
+    //    direction = GetDirection();
+    //    if (direction == Vector3.zero)
+    //    {
+    //        return;
+    //    }
+    //}
+=======
+
+
 
     }
+
+<<<<<<< HEAD
+>>>>>>> parent of 3bfbc9d... Update
+=======
+>>>>>>> parent of 3bfbc9d... Update
     //---------------------接口------------------------------
     public float GetSpeed() {
         return m_inputSpeed;
@@ -155,12 +198,28 @@ public class GridMove : MonoBehaviour {
         return m_current_grid;
     }
 
-    public void SetTheTurnPoint(Vector3 position, Vector3 direction)
+<<<<<<< HEAD
+<<<<<<< HEAD
+    public void SetTheTurnPoint(Vector3 direction)
     {
-        Vector3[] temp = { position, direction };
+        Vector3 temp = m_direction;
+        m_direction = direction;
+        if (temp != m_direction)
+        {
+            SaveTheTurnPoint(m_direction);
+        }
+    }
+
+    public void SaveTheTurnPoint(Vector3 direction)
+    {
+        Vector3[] temp = { m_current_grid, direction };
         PointList.AddRange(temp);
     }
 
+=======
+>>>>>>> parent of 3bfbc9d... Update
+=======
+>>>>>>> parent of 3bfbc9d... Update
 	public bool IsRuning(){
 		if ((m_move_vector.magnitude) > 0.1f)
 			return true;

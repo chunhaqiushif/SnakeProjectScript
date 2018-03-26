@@ -10,22 +10,27 @@ public class PlayerController : MonoBehaviour {
 	private float m_lastInputTime = 0;
 
 	private int directionCount = 0;
-    private Vector3[] directions = new Vector3[4] {
+	Vector3[] directions = new Vector3[4] {
 		Vector3.forward,
 		Vector3.right,
 		Vector3.back,
 		Vector3.left
 	};
-
-
-
+    float input = 0;
+    float inputRaw = 0;
+    
     // Use this for initialization
     void Start () {
 		m_grid_move = GetComponent<GridMove> ();
     }
 
 	void Update(){
-		m_updateFunc();
+		//m_updateFunc();
+
+        input = Input.GetAxis("Horizontal");
+        inputRaw = Input.GetAxisRaw("Horizontal");
+
+        GetMoveDirection();
     }
     //--------------------阶段------------------------
 
@@ -39,29 +44,37 @@ public class PlayerController : MonoBehaviour {
 
     //--------------------功能------------------------
 
-    Vector3 TurnMoveDirection(float inputDirction){
-		if (inputDirction != 0) {
-			directionCount = (directionCount + 4 + (int)inputDirction) % 4;
-		}
-		return directions [directionCount];
-	}
+    public delegate void ChangeDirectionPointHandler(Vector3 direction);
+    public static ChangeDirectionPointHandler ChangeDirectionPoint;
 
-	Vector3 GetMoveDirection(){
-		float input = Input.GetAxis ("Horizontal");
-		float inputRaw = Input.GetAxisRaw ("Horizontal");
-		float absInput = Mathf.Abs (input);
-		Vector3 direction = new Vector3 ();
+    Vector3 TurnMoveDirection(float inputDirction)
+    {
+        if (inputDirction != 0)
+        {
+            directionCount = (directionCount + 4 + (int)inputDirction) % 4;
+        }
+        return directions[directionCount];
+    }
 
-		if (absInput < THRESHOLD) {
-			if (m_lastInputTime < 0.2f) {
-				m_lastInputTime += Time.deltaTime;
-				direction = m_lastInput;
-//				absInput = Mathf.Abs (input);
-			}
-		} else {
-			m_lastInputTime = 0;
-			m_lastInput = TurnMoveDirection (inputRaw);
-		}
+    Vector3 GetMoveDirection()
+    {
+        Vector3 direction = new Vector3();
+        float absInput = Mathf.Abs(input);
+
+        if (absInput < THRESHOLD)
+        {
+            if (m_lastInputTime < 0.2f)
+            {
+                m_lastInputTime += Time.deltaTime;
+                direction = m_lastInput;
+                //				absInput = Mathf.Abs (input);
+            }
+        }
+        else
+        {
+            m_lastInputTime = 0;
+            m_lastInput = TurnMoveDirection(inputRaw);
+        }
 
         if (absInput < 0.1f)
         {
@@ -69,16 +82,26 @@ public class PlayerController : MonoBehaviour {
         }
 
         direction = directions[directionCount];
-		return direction;
-	}
+        ChangeDirectionPoint(direction);
+        return direction;
+    }
 
-    public delegate void SaveTheTurnPointHandler(Vector3 position, Vector3 direction);
-    public static SaveTheTurnPointHandler SaveTheTurnPoint;
-
-    public void OnGrid(Vector3[] positionPage){
+    public void OnGrid(Vector3[] positionPage)
+    {
         Vector3 pos = positionPage[0];
         Vector3 near_grid = positionPage[1];
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+        Vector3 direction = new Vector3();
+        direction = GetMoveDirection();
+        if (direction == Vector3.zero)
+        {
+            return;
+        }
+=======
+=======
+>>>>>>> parent of 3bfbc9d... Update
 		Vector3 direction = new Vector3();
 		direction = GetMoveDirection ();
 		if (direction == Vector3.zero) {
@@ -87,10 +110,22 @@ public class PlayerController : MonoBehaviour {
 
         m_grid_move.SetDirection (direction);
         SaveTheTurnPoint(near_grid, direction);
+>>>>>>> parent of 3bfbc9d... Update
     }
+        //public void OnGrid()
+        //{
+        //    Vector3 direction = new Vector3();
+        //    direction = GetMoveDirection();
+        //    if (direction == Vector3.zero)
+        //    {
+        //        return;
+        //    }
 
-	//-----------------------状态功能--------------------------------
-	delegate void STATE_FUNC();
+        //    m_grid_move.SetDirection(direction);
+        //}
+
+    //-----------------------状态功能--------------------------------
+    delegate void STATE_FUNC();
 	private string m_currentStateName;
 	STATE_FUNC m_stateEndFunc;
 
