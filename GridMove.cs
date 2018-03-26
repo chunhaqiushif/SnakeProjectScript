@@ -11,8 +11,8 @@ public class GridMove : MonoBehaviour {
     //移动方向与储存转弯点
 	Vector3 m_move_vector;
 	Vector3 m_direction;
-    Vector3 m_turnPointPosition;
-    Vector3 m_turnPointDirection;
+    Vector3 m_turnPointPosition = Vector3.zero;
+    Vector3 m_turnPointDirection = Vector3.zero;
     List<Vector3> PointList = new List<Vector3>();
 
     //撞击检查
@@ -104,6 +104,10 @@ public class GridMove : MonoBehaviour {
                 SetDirection(m_turnPointDirection);
                 PointList.RemoveRange(0, 2);
             }
+            else
+            {
+                print(m_turnPointPosition);
+            }
 
 			if (Vector3.Dot(direction_save, m_direction)<0.00005f)
             {
@@ -131,7 +135,11 @@ public class GridMove : MonoBehaviour {
     {
         Vector3[] temp = { position, direction };
         PointList.AddRange(temp);
-        print("!");
+        if (PointList.Count != 0)
+        {
+            m_turnPointPosition = position;
+            m_turnPointDirection = direction;
+        }
     }
 
 
