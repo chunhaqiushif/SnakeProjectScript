@@ -13,7 +13,7 @@ public class GridMove : MonoBehaviour {
 	Vector3 m_direction;
     Vector3 m_turnPointPosition;
     Vector3 m_turnPointDirection;
-    List<Vector3> PointList;
+    List<Vector3> PointList = new List<Vector3>();
 
     //撞击检查
     private const float HITCHECK_HEIGHT = 0.5f;
@@ -127,20 +127,11 @@ public class GridMove : MonoBehaviour {
 		return m_direction;
 	}
 
-    //public void SetTheTurnPoint(Vector3 direction)
-    //{
-    //    Vector3 temp = m_direction;
-    //    m_direction = direction;
-    //    if (temp != m_direction)
-    //    {
-    //        SaveTheTurnPoint(m_direction);
-    //    }
-    //}
-
     public void SaveTheTurnPoint(Vector3 position, Vector3 direction)
     {
         Vector3[] temp = { position, direction };
         PointList.AddRange(temp);
+        print("!");
     }
 
 

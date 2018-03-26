@@ -16,8 +16,7 @@ public class PlayerController : MonoBehaviour {
 		Vector3.back,
 		Vector3.left
 	};
-    float input = 0;
-    float inputRaw = 0;
+
     
     // Use this for initialization
     void Start () {
@@ -27,10 +26,6 @@ public class PlayerController : MonoBehaviour {
 	void Update(){
 		//m_updateFunc();
 
-        input = Input.GetAxis("Horizontal");
-        inputRaw = Input.GetAxisRaw("Horizontal");
-
-        GetMoveDirection();
     }
     //--------------------阶段------------------------
 
@@ -58,8 +53,12 @@ public class PlayerController : MonoBehaviour {
 
     Vector3 GetMoveDirection()
     {
-        Vector3 direction = new Vector3();
+        float input = Input.GetAxis("Horizontal");
+        float inputRaw = Input.GetAxisRaw("Horizontal");
         float absInput = Mathf.Abs(input);
+
+        Vector3 direction = new Vector3();
+        
 
         if (absInput < THRESHOLD)
         {
