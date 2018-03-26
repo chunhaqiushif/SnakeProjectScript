@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class TurnAnimator : MonoBehaviour {
     protected GridMove m_move;
-<<<<<<< HEAD:TurnAnimator.cs
-<<<<<<< HEAD:TurnAnimator.cs
-    
-=======
-=======
->>>>>>> parent of 3bfbc9d... Update:HeadAnimator.cs
 
->>>>>>> parent of 3bfbc9d... Update:HeadAnimator.cs
 	// Use this for initialization
 	void Start () {
         m_move = GetComponent<GridMove>();

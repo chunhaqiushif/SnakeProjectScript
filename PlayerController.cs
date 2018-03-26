@@ -44,8 +44,8 @@ public class PlayerController : MonoBehaviour {
 
     //--------------------功能------------------------
 
-    public delegate void ChangeDirectionPointHandler(Vector3 direction);
-    public static ChangeDirectionPointHandler ChangeDirectionPoint;
+    public delegate void SaveTheTurnPointHandler(Vector3 position,Vector3 direction);
+    public static SaveTheTurnPointHandler SaveTheTurnPoint;
 
     Vector3 TurnMoveDirection(float inputDirction)
     {
@@ -82,7 +82,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         direction = directions[directionCount];
-        ChangeDirectionPoint(direction);
         return direction;
     }
 
@@ -90,8 +89,6 @@ public class PlayerController : MonoBehaviour {
     {
         Vector3 pos = positionPage[0];
         Vector3 near_grid = positionPage[1];
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         Vector3 direction = new Vector3();
         direction = GetMoveDirection();
@@ -99,30 +96,11 @@ public class PlayerController : MonoBehaviour {
         {
             return;
         }
-=======
-=======
->>>>>>> parent of 3bfbc9d... Update
-		Vector3 direction = new Vector3();
-		direction = GetMoveDirection ();
-		if (direction == Vector3.zero) {
-			return;
-		}
 
         m_grid_move.SetDirection (direction);
         SaveTheTurnPoint(near_grid, direction);
->>>>>>> parent of 3bfbc9d... Update
-    }
-        //public void OnGrid()
-        //{
-        //    Vector3 direction = new Vector3();
-        //    direction = GetMoveDirection();
-        //    if (direction == Vector3.zero)
-        //    {
-        //        return;
-        //    }
 
-        //    m_grid_move.SetDirection(direction);
-        //}
+    }
 
     //-----------------------状态功能--------------------------------
     delegate void STATE_FUNC();
